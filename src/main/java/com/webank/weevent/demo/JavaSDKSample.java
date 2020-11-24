@@ -27,6 +27,8 @@ public class JavaSDKSample {
 
     private static String localReceivePath = "./received";
 
+    private static String fixChunkSize = "102400";
+
     public static void main(String[] args) throws InterruptedException {
         log.info("args = {}", Arrays.toString(args));
 
@@ -184,7 +186,7 @@ public class JavaSDKSample {
 
     private static void sendFile(String groupId, String topicName, String filePath) throws BrokerException {
         try {
-            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId, "");
+            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId, fixChunkSize);
             weEventFileClient.openTransport4Sender(topicName);
             FileChunksMeta fileChunksMeta = weEventFileClient.publishFile(topicName, new File(filePath).getAbsolutePath(), true);
             log.info("sendFile success, fileChunksMeta:{}", JsonHelper.object2Json(fileChunksMeta));
