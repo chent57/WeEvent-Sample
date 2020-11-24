@@ -76,7 +76,7 @@ fi
 
 if [[ $1 == "receiveFile" ]] && [[ $# -ne 4 ]];then
     echo "Usage:"
-    echo "    ./command.sh receiveFile groupId topicName"
+    echo "    ./command.sh receiveFile groupId topicName chunkSize"
     exit 1
 fi
 
@@ -85,14 +85,14 @@ if [[ "$(uname)" == "Darwin" ]] || [[ "$(expr substr $(uname -s) 1 5)" == "Linux
     if [[ $1 == "publish" ]] || [[ $1 == "sendFile" ]];then
         "${JAVA_HOME}"/bin/java -cp dist/conf/:dist/lib/*:dist/apps/* com.webank.weevent.demo.JavaSDKSample $1 $2 $3 $4
     else
-        "${JAVA_HOME}"/bin/java -cp dist/conf/:dist/lib/*:dist/apps/* com.webank.weevent.demo.JavaSDKSample $1 $2 $3
+        "${JAVA_HOME}"/bin/java -cp dist/conf/:dist/lib/*:dist/apps/* com.webank.weevent.demo.JavaSDKSample $1 $2 $3 $4
     fi
 # Windows
 elif [[ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]];then
     if [[ $1 == "publish" ]] || [[ $1 == "sendFile" ]];then
         "${JAVA_HOME}"/bin/java -cp 'dist/conf/;dist/lib/*;dist/apps/*' com.webank.weevent.demo.JavaSDKSample $1 $2 $3 $4
     else
-        "${JAVA_HOME}"/bin/java -cp 'dist/conf/;dist/lib/*;dist/apps/*' com.webank.weevent.demo.JavaSDKSample $1 $2 $3
+        "${JAVA_HOME}"/bin/java -cp 'dist/conf/;dist/lib/*;dist/apps/*' com.webank.weevent.demo.JavaSDKSample $1 $2 $3 $4
     fi
 else
 	echo "Unknown os:" $(uname -s)
