@@ -26,8 +26,6 @@ public class JavaSDKSample {
     private static List<String> subscribeIdList = new ArrayList<>();
 
     private static String localReceivePath = "./received";
-    // chunk size 1MB
-    private static int fileChunkSize = 1048576;
 
     public static void main(String[] args) throws InterruptedException {
         log.info("args = {}", Arrays.toString(args));
@@ -39,6 +37,7 @@ public class JavaSDKSample {
         String command = args[0];
         String groupId = args[1];
         String topicName;
+        String chunkSize;
         String content;
         String filePath;
         String eventId;
@@ -86,7 +85,8 @@ public class JavaSDKSample {
                     break;
                 case "receiveFile":
                     topicName = args[2];
-                    receiveFile(groupId, topicName);
+                    chunkSize = args[3];
+                    receiveFile(groupId, topicName, chunkSize);
                     break;
             }
         } catch (BrokerException e) {
@@ -184,7 +184,7 @@ public class JavaSDKSample {
 
     private static void sendFile(String groupId, String topicName, String filePath) throws BrokerException {
         try {
-            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId);
+            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId, "");
             weEventFileClient.openTransport4Sender(topicName);
             FileChunksMeta fileChunksMeta = weEventFileClient.publishFile(topicName, new File(filePath).getAbsolutePath(), true);
             log.info("sendFile success, fileChunksMeta:{}", JsonHelper.object2Json(fileChunksMeta));
@@ -195,7 +195,7 @@ public class JavaSDKSample {
         }
     }
 
-    private static void receiveFile(String groupId, String topicName) throws BrokerException {
+    private static void receiveFile(String groupId, String topicName, String chunkSize) throws BrokerException {
         IWeEventFileClient.FileListener fileListener = new IWeEventFileClient.FileListener() {
             @Override
             public void onFile(String topicName, String fileName) {
@@ -209,7 +209,7 @@ public class JavaSDKSample {
             }
         };
         try {
-            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId);
+            IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId, chunkSize);
             weEventFileClient.openTransport4Receiver(topicName, fileListener);
             Thread.sleep(1000 * 60 * 5);
         } catch (Exception e) {
@@ -218,10 +218,10 @@ public class JavaSDKSample {
         }
     }
 
-    private static IWeEventFileClient getIWeEventFileClient(String groupId) {
+    private static IWeEventFileClient getIWeEventFileClient(String groupId, String chunkSize) {
         FiscoConfig fiscoConfig = new FiscoConfig();
         fiscoConfig.load("");
-        IWeEventFileClient weEventFileClient = IWeEventFileClient.build(groupId, localReceivePath, fileChunkSize, fiscoConfig);
+        IWeEventFileClient weEventFileClient = IWeEventFileClient.build(groupId, localReceivePath, Integer.parseInt(chunkSize), fiscoConfig);
         return weEventFileClient;
     }
 }
