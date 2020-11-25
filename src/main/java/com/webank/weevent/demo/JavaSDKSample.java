@@ -213,7 +213,7 @@ public class JavaSDKSample {
         try {
             IWeEventFileClient weEventFileClient = getIWeEventFileClient(groupId, chunkSize);
             weEventFileClient.openTransport4Receiver(topicName, fileListener);
-            Thread.sleep(1000 * 60 * 5);
+            Thread.sleep(1000 * 60 * 30);
         } catch (Exception e) {
             log.error("receive file failed.", e);
             System.out.println("receive file failed." + e);
